@@ -166,11 +166,11 @@ if(CV_GCC OR CV_CLANG)
   endif()
 
   # We need pthread's
-  if(UNIX AND NOT ANDROID AND NOT (APPLE AND CV_CLANG)) # TODO
+  if(UNIX AND NOT ANDROID AND NOT (APPLE AND CV_CLANG) AND NOT VXWORKS) # TODO
     add_extra_compiler_option(-pthread)
   endif()
 
-  if(CV_CLANG)
+  if(CV_CLANG AND NOT VXWORKS)
     add_extra_compiler_option(-Qunused-arguments)
   endif()
 

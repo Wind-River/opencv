@@ -32,6 +32,10 @@
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 
+#ifdef __VXWORKS__
+#undef CPU
+#endif
+
 namespace protobuf_opencv_2dcaffe_2eproto {
 // Internal implementation detail -- do not use these members.
 struct TableStruct {

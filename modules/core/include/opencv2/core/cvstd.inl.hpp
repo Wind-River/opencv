@@ -44,9 +44,20 @@
 #ifndef OPENCV_CORE_CVSTDINL_HPP
 #define OPENCV_CORE_CVSTDINL_HPP
 
+#ifndef __VXWORKS__
 #include <complex>
 #include <ostream>
 #include <sstream>
+#else
+#define _ALT_NS  2
+ #ifndef OPENCV_NOSTL
+ #  include <complex>
+ #  include <ostream>
+ #endif
+#undef _ALT_NS
+#endif
+
+
 
 //! @cond IGNORED
 

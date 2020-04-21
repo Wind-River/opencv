@@ -125,6 +125,8 @@
     #include <ppltasks.h>
 #elif defined HAVE_CONCURRENCY
     #include <ppl.h>
+#elif defined HAVE_PTHREADS_PF && __VXWORKS__
+    #include <pthread.h>
 #endif
 
 
@@ -946,7 +948,7 @@ int getNumberOfCPUs_()
 
 #endif
 
-#if !defined(_WIN32) && !defined(__APPLE__)
+#if !defined(_WIN32) && !defined(__APPLE__) && !defined(__VXWORKS__)
 
     static unsigned cpu_count_sysconf = (unsigned)sysconf( _SC_NPROCESSORS_ONLN );
     ncpus = minNonZero(ncpus, cpu_count_sysconf);

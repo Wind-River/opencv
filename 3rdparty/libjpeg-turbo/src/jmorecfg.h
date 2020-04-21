@@ -46,6 +46,11 @@
  * You can use a signed char by having GETJSAMPLE mask it with 0xFF.
  */
 
+#ifdef __VXWORKS__
+#define  HAVE_UNSIGNED_CHAR
+#endif
+
+
 #ifdef HAVE_UNSIGNED_CHAR
 
 typedef unsigned char JSAMPLE;
@@ -122,7 +127,7 @@ typedef char JOCTET;
  */
 
 /* UINT8 must hold at least the values 0..255. */
-
+#ifndef __VXWORKS__
 #ifdef HAVE_UNSIGNED_CHAR
 typedef unsigned char UINT8;
 #else /* not HAVE_UNSIGNED_CHAR */
@@ -132,15 +137,15 @@ typedef char UINT8;
 typedef short UINT8;
 #endif /* __CHAR_UNSIGNED__ */
 #endif /* HAVE_UNSIGNED_CHAR */
-
+#endif
 /* UINT16 must hold at least the values 0..65535. */
-
+#ifndef __VXWORKS__
 #ifdef HAVE_UNSIGNED_SHORT
 typedef unsigned short UINT16;
 #else /* not HAVE_UNSIGNED_SHORT */
 typedef unsigned int UINT16;
 #endif /* HAVE_UNSIGNED_SHORT */
-
+#endif
 /* INT16 must hold at least the values -32768..32767. */
 
 #ifndef XMD_H                   /* X11/xmd.h correctly defines INT16 */
@@ -172,11 +177,13 @@ typedef short INT16;
  * same regardless of any external headers that may be included.
  */
 
+#ifndef __VXWORKS__
 #ifndef XMD_H                   /* X11/xmd.h correctly defines INT32 */
 #ifndef _BASETSD_H_             /* Microsoft defines it in basetsd.h */
 #ifndef _BASETSD_H              /* MinGW is slightly different */
 #ifndef QGLOBAL_H               /* Qt defines it in qglobal.h */
 typedef long INT32;
+#endif
 #endif
 #endif
 #endif
