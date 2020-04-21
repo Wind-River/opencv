@@ -604,7 +604,7 @@ int cv::createButton(const String&, ButtonCallback, void*, int , bool )
 #elif defined (HAVE_COCOA)    // see window_cocoa.mm
 #elif defined (HAVE_QT)       // see window_QT.cpp
 #elif defined (WINRT) && !defined (WINRT_8_0) // see window_winrt.cpp
-
+#elif defined (__VXWORKS__) // see window_vx.cpp
 #else
 
 // No windowing system present at compile time ;-(

@@ -126,6 +126,8 @@ elseif(HAVE_GTK OR HAVE_GTK3)
 elseif(HAVE_COCOA)
   list(APPEND highgui_srcs ${CMAKE_CURRENT_LIST_DIR}/src/window_cocoa.mm)
   list(APPEND HIGHGUI_LIBRARIES "-framework Cocoa")
+elseif(VXWORKS)
+  list(APPEND highgui_srcs ${CMAKE_CURRENT_LIST_DIR}/src/window_vx.cpp)
 endif()
 
 if(TRUE)
