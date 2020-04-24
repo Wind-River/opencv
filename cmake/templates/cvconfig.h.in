@@ -165,4 +165,7 @@
 /* Library QR-code decoding */
 #cmakedefine HAVE_QUIRC
 
+/* VxWorks UVC support*/
+#cmakedefine HAVE_UVCVX
+
 #endif // OPENCV_CVCONFIG_H_INCLUDED

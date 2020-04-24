@@ -498,6 +498,9 @@ OCV_OPTION(OPENCV_ENABLE_MEMALIGN     "Enable posix_memalign or memalign usage" 
 OCV_OPTION(ENABLE_PYLINT              "Add target with Pylint checks"                            (BUILD_DOCS OR BUILD_EXAMPLES) IF (NOT CMAKE_CROSSCOMPILING AND NOT APPLE_FRAMEWORK) )
 OCV_OPTION(ENABLE_FLAKE8              "Add target with Python flake8 checker"                    (BUILD_DOCS OR BUILD_EXAMPLES) IF (NOT CMAKE_CROSSCOMPILING AND NOT APPLE_FRAMEWORK) )
 
+OCV_OPTION(WITH_UVCVX "Include VxWorks UVC support" ON
+  VISIBLE_IF VXWORKS)
+
 if(ENABLE_IMPL_COLLECTION)
   add_definitions(-DCV_COLLECT_IMPL_DATA)
 endif()
@@ -766,6 +769,11 @@ if(WITH_QUIRC)
   add_subdirectory(3rdparty/quirc)
   set(HAVE_QUIRC TRUE)
 endif()
+
+if(WITH_UVCVX)
+  SET(HAVE_UVCVX TRUE)
+endif()
+
 # ----------------------------------------------------------------------------
 # OpenCV HAL
 # ----------------------------------------------------------------------------

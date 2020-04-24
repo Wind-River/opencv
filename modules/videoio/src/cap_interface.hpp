@@ -224,6 +224,10 @@ bool VideoCapture_V4L_waitAny(
         CV_OUT std::vector<int>& ready,
         int64 timeoutNs);
 
+#ifdef __VXWORKS__
+Ptr<IVideoCapture> create_UVCVX_capture(int index);
+#endif
+
 } // cv::
 
 #endif // CAP_INTERFACE_HPP

@@ -66,6 +66,15 @@ endif()
 
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/plugin.cmake)
 
+if(WITH_UVCVX)
+    list(APPEND videoio_srcs
+        ${CMAKE_CURRENT_LIST_DIR}/src/cap_uvc_vx.cpp)
+    list(APPEND videoio_hdrs
+        ${CMAKE_CURRENT_LIST_DIR}/src/cap_uvc_vx.hpp)
+endif()
+
+
+
 set(tgts)
 
 if(TARGET ocv.3rdparty.mediasdk)
