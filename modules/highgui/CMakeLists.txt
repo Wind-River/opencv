@@ -128,6 +128,8 @@ elseif(HAVE_COCOA)
   list(APPEND HIGHGUI_LIBRARIES "-framework Cocoa")
 elseif(VXWORKS)
   list(APPEND highgui_srcs ${CMAKE_CURRENT_LIST_DIR}/src/window_vx.cpp)
+  string(REPLACE "-D_XOPEN_SOURCE" " " CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+  string(REPLACE "-D_XOPEN_SOURCE" " " CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 endif()
 
 if(TRUE)

@@ -5,6 +5,9 @@ mark_as_advanced(VIDEOIO_PLUGIN_LIST VIDEOIO_ENABLE_PLUGINS VIDEOIO_ENABLE_STRIC
 
 string(REPLACE "," ";" VIDEOIO_PLUGIN_LIST "${VIDEOIO_PLUGIN_LIST}")  # support comma-separated list (,) too
 
+string(REPLACE "-D_XOPEN_SOURCE" " " CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+string(REPLACE "-D_XOPEN_SOURCE" " " CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+
 # Make virtual opencv_videoio_plugins target
 if(NOT TARGET opencv_videoio_plugins)
   add_custom_target(opencv_videoio_plugins ALL)

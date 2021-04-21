@@ -30,6 +30,9 @@
 #define MODULESTR "cv2"
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 
+
+#undef NPY_HAVE_ENDIAN_H 
+#define _WRS_INLINE		inline
 #include <numpy/ndarrayobject.h>
 
 #include "opencv2/core/utils/configuration.private.hpp"

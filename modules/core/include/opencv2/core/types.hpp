@@ -57,21 +57,6 @@
 #include "opencv2/core/cvstd.hpp"
 #include "opencv2/core/matx.hpp"
 
-#ifdef __VXWORKS__
-#undef READ
-#undef WRITE
-#undef MEMORY
-#undef APPEND
-#undef NONE
-#undef OK
-#undef FAST
-#undef LOCAL
-#endif
-
-
-#ifdef __VXWORKS__
-#define  strnlen strnlen_s
-#endif
 
 namespace cv
 {

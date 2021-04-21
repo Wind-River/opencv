@@ -636,6 +636,8 @@ if(UNIX)
       set(OPENCV_LINKER_LIBS ${OPENCV_LINKER_LIBS} dl m log)
     elseif(CMAKE_SYSTEM_NAME MATCHES "FreeBSD|NetBSD|DragonFly|OpenBSD|Haiku")
       set(OPENCV_LINKER_LIBS ${OPENCV_LINKER_LIBS} m pthread)
+    elseif(VXWORKS)
+      set(OPENCV_LINKER_LIBS ${OPENCV_LINKER_LIBS} m z)
     elseif(EMSCRIPTEN)
       # no need to link to system libs with emscripten
     else()

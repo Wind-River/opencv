@@ -53,6 +53,10 @@
 #include <opencv2/core/utils/tls.hpp>
 #include <opencv2/core/utils/instrumentation.hpp>
 
+#ifdef __VXWORKS__
+#include <unistd.h>
+#endif
+
 namespace cv {
 
 static void _initSystem()

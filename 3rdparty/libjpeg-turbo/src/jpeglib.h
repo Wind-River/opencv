@@ -30,6 +30,12 @@
 #endif
 #include "jmorecfg.h"           /* seldom changed options */
 
+/*
+#ifdef __VXWORKS__
+typedef  uint16_t UINT16; 
+typedef  uint8_t UINT8;
+#endif
+*/
 
 #ifdef __cplusplus
 #ifndef DONT_USE_EXTERN_C

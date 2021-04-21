@@ -9118,7 +9118,7 @@ InternalRunDeathTestFlag* ParseInternalRunDeathTestFlag() {
 
 #if GTEST_OS_WINDOWS
 # define GTEST_PATH_MAX_ _MAX_PATH
-#elif defined(PATH_MAX)
+#elif defined(PATH_MAX) && !__VXWORKS__
 # define GTEST_PATH_MAX_ PATH_MAX
 #elif defined(_XOPEN_PATH_MAX)
 # define GTEST_PATH_MAX_ _XOPEN_PATH_MAX
