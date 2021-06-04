@@ -92,6 +92,7 @@ protected:
     uint16_t m_width;
     uint16_t m_height;
     uint32_t m_bsize;
+    uint32_t m_format;
     Mat  m_frame;
     char *m_vbuf;
 
@@ -111,6 +112,7 @@ bool CvCaptureCAM_VX::isOpened() const
 bool CvCaptureCAM_VX::open(int index) {
     char dev[7] = {0};
     uint32_t bsize = 0;
+    uint32_t format = VIDEO_FMT_YUY2;
 
     snprintf(dev, sizeof(dev), "/uvc/%d", index);
     if ((m_fd = ::open(dev, O_RDONLY, 0)) == -1) {
@@ -118,7 +120,7 @@ bool CvCaptureCAM_VX::open(int index) {
     }
 
     /* set initial format */
-    if (setFormat(1280, 720, VIDEO_FMT_YUY2) == false) {
+    if (setFormat(1280, 720, format) == false) {
         ::close(m_fd);
         m_fd = -1;
         return false;
@@ -138,6 +140,7 @@ bool CvCaptureCAM_VX::open(int index) {
         return false;
     }
 
+    m_format = format;
     m_bsize = bsize;
     m_index = index;
 
@@ -179,8 +182,15 @@ bool CvCaptureCAM_VX::grabFrame()
 
     if (FD_ISSET(m_fd, &rfdset)) {
         if ((size = ::read(m_fd, m_vbuf, m_bsize)) >=0) {
-            cv::Mat f1(m_height, m_width, CV_8UC2, m_vbuf);
-            f1.copyTo(m_frame);
+            Mat rawData(1, size, CV_8SC1, (void*)m_vbuf);
+            Mat decodedMat = imdecode(rawData, IMREAD_ANYCOLOR);
+
+            if (decodedMat.data == NULL) {
+                cv::Mat f1(m_height, m_width, CV_8UC2, m_vbuf);
+                f1.copyTo(m_frame);
+            } else {
+                decodedMat.copyTo(m_frame);
+            }
             ret = true;
         }
     }
@@ -190,9 +200,12 @@ bool CvCaptureCAM_VX::grabFrame()
 
 bool CvCaptureCAM_VX::retrieveFrame(int outputType, OutputArray out)
 {
-    grabFrame();
-    cvtColor( m_frame, out,  COLOR_YUV2BGRA_YUY2);
-    return TRUE;
+    if (m_format == (uint32_t)CV_FOURCC('Y', 'U', 'Y', '2')) {
+        cvtColor(m_frame, out,  COLOR_YUV2BGRA_YUY2);
+    } else {
+        m_frame.copyTo(out);
+    }
+    return true;
 }
 
 double CvCaptureCAM_VX::getProperty(int property_id)  const
@@ -204,8 +217,8 @@ double CvCaptureCAM_VX::getProperty(int property_id)  const
         return m_height;
     case CV_CAP_PROP_FPS:
         return (int)(1E6 / m_frameIntervalUs);
-        case CV_CAP_PROP_FOURCC:
-        return (double)CV_FOURCC('Y', 'U', 'Y', '2');
+    case CV_CAP_PROP_FOURCC:
+        return (double)m_format;
     }
     return 0;
 }
@@ -219,15 +232,21 @@ bool CvCaptureCAM_VX::setFormat(uint16_t width, uint16_t height, uint32_t format
     VS_FORMAT_USR_DATA *pData = (VS_FORMAT_USR_DATA *)calloc(1, sizeof(VS_FORMAT_USR_DATA));
     if (pData == NULL)
         return false;
-        pData->width = width;
-        pData->height = height;
-        pData->fourcc = format;
 
-        if (ioctl(m_fd, USB2_VIDEO_IOCTL_SET_FORMAT, pData) == 0) {
-                ret = true;
-                m_width = pData->width;
-                m_height = pData->height;
+    pData->width = width;
+    pData->height = height;
+    pData->fourcc = format;
+
+    if (ioctl(m_fd, USB2_VIDEO_IOCTL_SET_FORMAT, pData) == 0) {
+        ret = true;
+        //get default frame interval for the new format
+        if (m_format != format) {
+            VS_FORMAT_DECS  vsFmtDesc;
+            if (ioctl(m_fd, USB2_VIDEO_IOCTL_GET_FORMAT, &vsFmtDesc) == 0) {
+                m_frameIntervalUs = vsFmtDesc.interval;
+            }
         }
+    }
 
     free(pData);
     uint32_t bsize = 0;
@@ -243,14 +262,17 @@ bool CvCaptureCAM_VX::setFormat(uint16_t width, uint16_t height, uint32_t format
                 return false;
             }
         } else {
-            if ((realloc(m_vbuf, bsize)) == NULL) {
-
+            if ((m_vbuf = (char *)realloc(m_vbuf, bsize)) == NULL) {
                 return false;
             }
         }
     }
 
+    m_width = width;
+    m_height = height;
+    m_format = format;
     m_bsize = bsize;
+
     return true;
 }
 
@@ -292,8 +314,11 @@ bool CvCaptureCAM_VX::setProperty(int property_id, double value)
                     height = ival;
                     width = height*4/3;
                 }
-                retval = setFormat(width, height, VIDEO_FMT_YUY2);
+                retval = setFormat(width, height, m_format);
             }
+            break;
+        case CAP_PROP_FOURCC:
+            retval = setFormat(m_width, m_height, ival);
             break;
         case CV_CAP_PROP_FPS:
             retval = setFrameRate(ival);
